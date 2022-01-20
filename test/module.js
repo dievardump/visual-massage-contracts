@@ -252,9 +252,10 @@ describe('VisualMassageModule', () => {
                 visualMassageModule.collect(1, { value: price })
             ).to.be.revertedWith('ERC721: token already minted')
         });
+    });
 
-
-        it('royalties on tokens are the right one - 10% to contract owner', async function () {
+    describe('Royalties - EIP2981', async function () {
+        it('returns the right royalties on nfts', async function () {
             await visualMassageModule.setCurrentHelix(1);
             await visualMassageModule.setCollectActive(true);
             const price = (await visualMassageModule.helixes(await visualMassageModule.currentHelixId())).price;
@@ -266,8 +267,21 @@ describe('VisualMassageModule', () => {
         });
     });
 
-    describe('Withdraw', async () => {
+    describe('TokenURI override', async function () {
+        it('can override a specific tokenURI', async function () {
+            await visualMassageModule.setCurrentHelix(1);
+            await visualMassageModule.setCollectActive(true);
+            const price = (await visualMassageModule.helixes(await visualMassageModule.currentHelixId())).price;
+            await visualMassageModule.collect(1, { value: price });
 
+            const newTokenURI = 'ipfs://random';
+            expect(await nftContract.tokenURI(1)).to.not.be.equal(newTokenURI);
+            await visualMassageModule.overrideTokenURI(1, newTokenURI);
+            expect(await nftContract.tokenURI(1)).to.be.equal(newTokenURI);
+        });
+    });
+
+    describe('Withdraw', async () => {
         it('withdrawing works', async function () {
             // first mint one
             await visualMassageModule.setCurrentHelix(1);

@@ -79,7 +79,7 @@ contract VisualMassageModule is
 
         // phase 0 is a private event for contributors & previous holders & H
         // only people with a valid signature can claim
-        configureHelix(0, 1, 300, 0, signer);
+        configureHelix(0, 1, 299, 0, signer);
 
         // phases 1 to 3
         configureHelix(1, 1, 100, 1 ether, address(0));
