@@ -7,26 +7,22 @@ const hre = require("hardhat");
 const { ethers, deployments } = hre;
 
 async function main() {
-
   [deployer, signer, random] = await ethers.getSigners();
 
-  visualMassageModule = await ethers.getContract('VisualMassageModule')
+  visualMassageModule = await ethers.getContract("VisualMassageModule");
 
   // MOCK.
-  const NF721Mock = await ethers.getContractFactory(
-      'NF721Mock',
-      deployer,
-  );
+  const NF721Mock = await ethers.getContractFactory("NF721Mock", deployer);
   nftContract = await NF721Mock.deploy();
   await nftContract.initialize(
-      "NF721Mock",
-      "NF721Mock",
-      '',
-      ethers.constants.AddressZero,
-      ethers.constants.AddressZero,
-      [{ enabled: true, minter: true, module: visualMassageModule.address }],
-      ethers.constants.AddressZero,
-      0
+    "NF721Mock",
+    "NF721Mock",
+    "",
+    ethers.constants.AddressZero,
+    ethers.constants.AddressZero,
+    [{ enabled: true, minter: true, module: visualMassageModule.address }],
+    ethers.constants.AddressZero,
+    0
   );
 }
 

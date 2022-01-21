@@ -6,10 +6,13 @@
 const hre = require("hardhat");
 
 async function main() {
-
-  const module = await ethers.getContract('VisualMassageModule');
-  console.log(await module.gift(11, '0x5FbDB2315678afecb367f032d93F642f64180aa3').then(tx => tx.wait()).then(r => r.transactionHash));
-
+  const module = await ethers.getContract("VisualMassageModule");
+  console.log(
+    await module
+      .gift(11, "0x5FbDB2315678afecb367f032d93F642f64180aa3")
+      .then((tx) => tx.wait())
+      .then((r) => r.transactionHash)
+  );
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -6,11 +6,12 @@
 const hre = require("hardhat");
 
 async function main() {
+  const module = await ethers.getContract("VisualMassageModule");
 
-  const module = await ethers.getContract('VisualMassageModule');
-
-  await module.setCurrentHelix(1).then(tx => tx.wait()).then(console.log);
-
+  await module
+    .setCurrentHelix(1)
+    .then((tx) => tx.wait())
+    .then(console.log);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

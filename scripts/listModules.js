@@ -6,20 +6,18 @@
 const hre = require("hardhat");
 
 async function main() {
-
-  const module = await ethers.getContract('VisualMassageModule');
+  const module = await ethers.getContract("VisualMassageModule");
 
   const nftContractAddress = await module.nftContract();
 
   console.log(nftContractAddress);
 
   const nftContract = await ethers.getContractAt(
-    'NiftyForge721',
+    "NiftyForge721",
     nftContractAddress
   );
 
   console.log(await nftContract.listModules());
-
 }
 
 // We recommend this pattern to be able to use async/await everywhere
