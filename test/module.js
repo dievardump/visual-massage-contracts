@@ -307,7 +307,27 @@ describe("VisualMassageModule", () => {
     });
   });
 
-  describe("TokenURI override", async function () {
+  describe("TokenURI", async function () {
+    it("has the right tokenURI", async function () {
+      await visualMassageModule.gift(1, random.address);
+      await visualMassageModule.gift(100, random.address);
+      await visualMassageModule.gift(111, random.address);
+      await visualMassageModule.gift(246, random.address);
+
+      expect(await nftContract.tokenURI(1)).to.be.equal(
+        `${process.env.METADATA_URI}1.json`
+      );
+      expect(await nftContract.tokenURI(100)).to.be.equal(
+        `${process.env.METADATA_URI}100.json`
+      );
+      expect(await nftContract.tokenURI(111)).to.be.equal(
+        `${process.env.METADATA_URI}111.json`
+      );
+      expect(await nftContract.tokenURI(246)).to.be.equal(
+        `${process.env.METADATA_URI}246.json`
+      );
+    });
+
     it("can override a specific tokenURI", async function () {
       await visualMassageModule.setCurrentHelix(1);
       await visualMassageModule.setCollectActive(true);

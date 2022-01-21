@@ -5,8 +5,8 @@ require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
-require('hardhat-deploy');
-require('hardhat-deploy-ethers');
+require("hardhat-deploy");
+require("hardhat-deploy-ethers");
 
 const minimist = require("minimist");
 
@@ -44,22 +44,21 @@ if (argv.network) {
 }
 
 const networks = {};
-['rinkeby', 'mainnet']
-  .forEach(network => {
-    const accounts = [];
-    if (process.env.DEPLOYER_KEY) {
-      accounts[0] = process.env.DEPLOYER_KEY;
-    }
+["rinkeby", "mainnet"].forEach((network) => {
+  const accounts = [];
+  if (process.env.DEPLOYER_KEY) {
+    accounts[0] = process.env.DEPLOYER_KEY;
+  }
 
-    if (process.env.SIGNER_KEY) {
-      accounts[1] = process.env.SIGNER_KEY;
-    }
+  if (process.env.SIGNER_KEY) {
+    accounts[1] = process.env.SIGNER_KEY;
+  }
 
-    networks[network] = {
-      url: process.env.PROVIDER || "",
-      accounts
-    };
-  });
+  networks[network] = {
+    url: process.env.PROVIDER || "",
+    accounts,
+  };
+});
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -69,12 +68,12 @@ const networks = {};
  */
 module.exports = {
   solidity: {
-    version: '0.8.9',
+    version: "0.8.9",
     settings: {
-        optimizer: {
-            enabled: true,
-            runs: 200,
-        },
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
     },
   },
   networks,
@@ -87,15 +86,16 @@ module.exports = {
   },
   namedAccounts: {
     deployer: {
-        default: 0, // here this will by default take the first account as deployer
+      default: 0, // here this will by default take the first account as deployer
     },
     signer: {
-        default: 1, // here this will by default take the second account as signer
+      default: 1, // here this will by default take the second account as signer
     },
   },
   external: {
     deployments: {
-      rinkeby: ['node_modules/@dievardump-web3/niftyforge/deployments/rinkeby']
-    }
-  }
+      mainnet: ["node_modules/@dievardump-web3/niftyforge/deployments/mainnet"],
+      rinkeby: ["node_modules/@dievardump-web3/niftyforge/deployments/rinkeby"],
+    },
+  },
 };
