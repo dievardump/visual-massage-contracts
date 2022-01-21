@@ -13,10 +13,6 @@ import "@dievardump-web3/signed-allowances/contracts/SignedAllowance.sol";
 
 import "./VisualMassageErrors.sol";
 
-interface IERC721 {
-    function ownerOf(uint256) external view returns (address);
-}
-
 /// @title VisualMassageModule
 /// @author Simon Fremaux (@dievardump)
 contract VisualMassageModule is
@@ -57,6 +53,9 @@ contract VisualMassageModule is
 
     /// @notice overrides a tokenURI
     mapping(uint256 => string) public tokenURIOverride;
+
+    /// @notice keep track of minted elements
+    mapping(uint256 => bool) public minted;
 
     /// @notice constructor
     /// @param contractURI_ The module URI (containing its metadata) - can be empty ''
@@ -179,13 +178,10 @@ contract VisualMassageModule is
             revert WrongHelix();
         }
 
-        // if the tokenId already has an owner, it can't be bought anymore
-        try IERC721(nftContract).ownerOf(tokenId) {
-            revert AlreadyCollected();
-        } catch {
-            // this means the token does not exist, so it's up to collect
-            return helix.price;
-        }
+        if (minted[tokenId]) revert AlreadyCollected();
+
+        // this means the token does not exist, so it's up to collect
+        return helix.price;
     }
 
     /// @notice getter for recipients & their shares
@@ -198,7 +194,7 @@ contract VisualMassageModule is
     {
         recipients = new address[](4);
         recipients[0] = address(0xA22Dff3bB28C224b6e5F4421d55997656eE34CeA);
-        recipients[1] = address(0xD1edDfcc4596CC8bD0bd7495beaB9B979fc50336);
+        recipients[1] = address(0x20224C07d1Baab220d7ef859312789C34c444DA4);
         recipients[2] = address(0xeaf03CD48f9B6B5B9C776c1517ff5fdB958dc94e);
         recipients[3] = owner();
 
@@ -454,6 +450,9 @@ contract VisualMassageModule is
         if (msg.value != helix.price) {
             revert WrongValue();
         }
+
+        if (minted[tokenId]) revert AlreadyCollected();
+        minted[tokenId] = true;
 
         // mint tokenId
         INiftyForge721(nftContract).mint(

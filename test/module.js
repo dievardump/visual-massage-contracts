@@ -224,6 +224,17 @@ describe("VisualMassageModule", () => {
       ).to.be.revertedWith("NotClaimable()");
     });
 
+    it("can gift if owner", async function () {
+      await visualMassageModule.gift(192, random.address);
+      expect(await nftContract.ownerOf(192)).to.be.equal(random.address);
+    });
+
+    it("can not gift if not owner", async function () {
+      await expect(
+        visualMassageModule.connect(random).gift(192, random.address)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+    });
+
     it("can mint", async function () {
       await visualMassageModule.setCurrentHelix(1);
       await visualMassageModule.setCollectActive(true);
@@ -258,7 +269,24 @@ describe("VisualMassageModule", () => {
 
       await expect(
         visualMassageModule.collect(1, { value: price })
-      ).to.be.revertedWith("ERC721: token already minted");
+      ).to.be.revertedWith("AlreadyCollected()");
+    });
+
+    it("can not mint twice the same id even after burn", async function () {
+      await visualMassageModule.setCurrentHelix(1);
+      await visualMassageModule.setCollectActive(true);
+      const price = (
+        await visualMassageModule.helixes(
+          await visualMassageModule.currentHelixId()
+        )
+      ).price;
+      await visualMassageModule.collect(1, { value: price });
+
+      await nftContract.burn(1);
+
+      await expect(
+        visualMassageModule.collect(1, { value: price })
+      ).to.be.revertedWith("AlreadyCollected()");
     });
   });
 
